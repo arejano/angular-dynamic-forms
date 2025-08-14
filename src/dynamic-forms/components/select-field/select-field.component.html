@@ -1,6 +1,99 @@
-<select [formControl]="control" [id]="fieldId">
-  <option value="">{{ placeholder || "Selecione uma opção" }}</option>
-  <option *ngFor="let opt of options" [value]="opt.hash">
-    {{ opt.descricao }}
-  </option>
-</select>
+<!-- <select [formControl]="control" [id]="fieldId"> -->
+<!-- <option value="">{{ placeholder || "Selecione uma opção" }}</option> -->
+<!-- <option *ngFor="let opt of options" [value]="opt.hash"> -->
+<!-- {{ opt.descricao }} -->
+<!-- </option> -->
+<!-- </select> -->
+
+<div
+  class="multi-select-container"
+  #container
+  tabindex="0"
+  (keydown)="onKeyDown($event)"
+>
+  <!-- Campo principal -->
+  <div
+    class="multi-select-input"
+    [class.multi-select-open]="isDropdownOpen"
+    [class.multi-select-has-value]="selectedItem"
+    (click)="toggleDropdown()"
+    [id]="fieldId"
+  >
+    <!-- Texto do item selecionado -->
+    <div class="selected-content" *ngIf="selectedItem">
+      <span class="selected-tag-text">{{ selectedItem.descricao }}</span>
+
+      <!-- Botão para limpar seleção -->
+      <button
+        type="button"
+        class="clear-all-btn"
+        (click)="clearSelection($event)"
+        title="Limpar seleção"
+      >
+        ×
+      </button>
+    </div>
+
+    <!-- Placeholder -->
+    <div class="placeholder-content" *ngIf="!selectedItem">
+      <span class="placeholder-text"
+        >{{ placeholder || "Selecione uma opção" }}</span
+      >
+    </div>
+
+    <!-- Seta -->
+    <div class="dropdown-arrow">
+      <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+        <path
+          d="M1 1L6 6L11 1"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Dropdown -->
+  <div
+    class="multi-select-dropdown"
+    [class.dropdown-open]="isDropdownOpen"
+    #dropdown
+  >
+    <div class="dropdown-content">
+      <!-- Campo de pesquisa -->
+      <div class="search-container">
+        <input
+          #searchInput
+          type="text"
+          class="search-input"
+          (input)="onSearchChange()"
+          placeholder="Pesquisar..."
+          (click)="$event.stopPropagation()"
+        />
+      </div>
+
+      <!-- Lista de opções -->
+      <div class="options-list">
+        <div
+          class="option-item"
+          *ngFor="let option of filteredOptions; let i = index"
+          [class.option-selected]="isOptionSelected(option)"
+          [class.option-hovered]="isOptionHovered(i)"
+          (click)="onOptionClick(option, $event)"
+          (mouseenter)="onOptionHover(i)"
+          [attr.data-index]="i"
+        >
+          <!-- Texto da opção -->
+          <span class="option-text">{{ option.descricao }}</span>
+        </div>
+
+        <!-- Mensagem quando não há opções -->
+        <div class="no-options" *ngIf="filteredOptions.length === 0">
+          Nenhuma opção encontrada
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

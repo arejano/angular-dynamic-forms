@@ -21,15 +21,11 @@ export class TextareaFieldComponent {
     @Optional() @Inject("placeholder") public placeholder?: string,
     @Optional() @Inject("max") public maxLengthValue?: number,
   ) {
-    // Usar sempre o fieldName como ID para garantir consistência com os labels
     this.fieldId = this.fieldName!;
-    console.log(`tamano maximo`, this.maxLength)
     this.maxLength = this.maxLengthValue || null;
 
-    // Inicializar contadores com valor atual
     this.updateCounts(this.control.value || "");
 
-    // Observar mudanças no valor para atualizar contadores
     this.control.valueChanges.subscribe((value: string) => {
       this.updateCounts(value || "");
     });

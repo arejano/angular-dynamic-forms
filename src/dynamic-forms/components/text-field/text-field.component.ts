@@ -16,8 +16,6 @@ export class TextFieldComponent {
     @Optional() @Inject("name") public fieldName?: string,
     @Optional() @Inject("placeholder") public placeholder?: string,
   ) {
-    // Usar sempre o fieldName como ID para garantir consistência com os labels
-    console.log(this.fieldName, this.placeholder)
     this.fieldId = this.fieldName!;
   }
 }

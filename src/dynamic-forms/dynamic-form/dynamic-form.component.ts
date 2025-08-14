@@ -5,6 +5,7 @@ import {
   Injector,
   StaticProvider,
   ChangeDetectorRef,
+  Input,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -18,77 +19,9 @@ import { NumberFieldComponent } from "../components/number-field/number-field.co
 import { TextareaFieldComponent } from "../components/textarea-field/textarea-field.component";
 import { SelectFieldComponent } from "../components/select-field/select-field.component";
 import { MultiSelectFieldComponent } from "../components/multi-select-field/multi-select-field.component";
+import { FormDataDTO, FormField } from "../models";
 
 // Interfaces para tipagem dos campos
-interface BaseField {
-  type: string;
-  value: string | number | string[];
-  name: string;
-  label: string;
-  placeholder?: string;
-  validators?: (string | any)[];
-}
-
-interface TextField extends BaseField {
-  type: "text";
-  value: string;
-}
-
-interface NumberField extends BaseField {
-  type: "number";
-  value: number | string;
-  min?: number;
-  max?: number;
-}
-
-interface SelectField extends BaseField {
-  type: "select";
-  value: string;
-  options: Array<{ hash: string; descricao: string }>;
-}
-
-interface TextareaField extends BaseField {
-  type: "textarea";
-  value: string;
-  max?: number;
-  mix?: number;
-}
-
-interface MultiSelectField extends BaseField {
-  type: "multiselect";
-  value: string[];
-  options: Array<{ hash: string; descricao: string }>;
-}
-
-type FormField =
-  | TextField
-  | NumberField
-  | SelectField
-  | TextareaField
-  | MultiSelectField;
-
-// Interface para DTO de dados do formulário
-interface FormDataDTO {
-  hash?: string | null; // ID do objeto para edição
-  anoLetivo?: string;
-  redePagamento?: string;
-  descricao?: string;
-  pontos?: number;
-  series?: number;
-  redes?: string;
-  categoria?: string;
-  prioridade?: string;
-  nomeAluno?: string;
-  turno?: string;
-  email?: string;
-  telefone?: string;
-  cpf?: string;
-  idade?: number;
-  disciplinas?: string[];
-  habilidades?: string[];
-  [key: string]: any; // Para campos dinâmicos
-}
-
 @Component({
   selector: "app-dynamic-form",
   standalone: true,
@@ -105,209 +38,8 @@ interface FormDataDTO {
   styleUrls: ["./dynamic-form.component.scss"],
 })
 export class DynamicFormComponent {
-  scheme: FormField[][] = [
-    [
-      {
-        type: "text",
-        value: "",
-        name: "anoLetivo",
-        label: "Ano Letivo",
-        placeholder: "Digite o ano",
-        validators: [
-          "required",
-          "minLength:4",
-          "maxLength:4",
-          "pattern:^[0-9]{4}$",
-        ],
-      },
-      {
-        type: "text",
-        value: "",
-        name: "redePagamento",
-        label: "Rede de Pagamento",
-        placeholder: "Nome da rede",
-        validators: ["required", "minLength:3"],
-      },
-    ],
-    [
-      {
-        type: "textarea",
-        value: "",
-        name: "descricao",
-        label: "Descrição",
-        placeholder: "Digite a descrição",
-        validators: ["required", "minLength:10", "maxLength:300"],
-        max: 300,
-      },
-    ],
-    [
-      {
-        type: "number",
-        value: "",
-        name: "pontos",
-        label: "Pontos",
-        min: 0,
-        max: 100,
-        validators: ["required", "min:0", "max:100"],
-      },
-      {
-        type: "number",
-        value: "",
-        name: "series",
-        label: "Séries",
-        validators: ["required", "min:1", "max:12"],
-      },
-      {
-        type: "select",
-        value: "",
-        name: "redes",
-        label: "Redes Disponíveis",
-        placeholder: "Escolha uma rede de ensino",
-        validators: ["required"],
-        options: [
-          { hash: "001", descricao: "Rede Municipal" },
-          { hash: "002", descricao: "Rede Estadual" },
-          { hash: "003", descricao: "Rede Federal" },
-        ],
-      },
-      {
-        type: "select",
-        value: "",
-        name: "categoria",
-        label: "Categoria do Projeto",
-        placeholder: "Selecione a categoria",
-        validators: ["required"],
-        options: [
-          { hash: "tech", descricao: "Tecnologia" },
-          { hash: "edu", descricao: "Educação" },
-          { hash: "health", descricao: "Saúde" },
-          { hash: "env", descricao: "Meio Ambiente" },
-        ],
-      },
-      {
-        type: "select",
-        value: "",
-        name: "prioridade",
-        label: "Nível de Prioridade",
-        placeholder: "Defina a prioridade",
-        validators: ["required"],
-        options: [
-          { hash: "baixa", descricao: "Baixa" },
-          { hash: "media", descricao: "Média" },
-          { hash: "alta", descricao: "Alta" },
-          { hash: "urgente", descricao: "Urgente" },
-        ],
-      },
-      {
-        type: "text",
-        value: "",
-        name: "nomeAluno",
-        label: "Nome do Aluno",
-        placeholder: "Digite o nome completo",
-        validators: ["required", "minLength:2", "maxLength:100"],
-      },
-      {
-        type: "select",
-        value: "",
-        name: "turno",
-        label: "Turno de Estudo",
-        placeholder: "Qual turno você estuda?",
-        validators: ["required"],
-        options: [
-          { hash: "matutino", descricao: "Matutino (7h às 12h)" },
-          { hash: "vespertino", descricao: "Vespertino (13h às 18h)" },
-          { hash: "noturno", descricao: "Noturno (19h às 23h)" },
-          { hash: "integral", descricao: "Período Integral" },
-        ],
-      },
-    ],
-    [
-      {
-        type: "text",
-        value: "",
-        name: "email",
-        label: "Email",
-        placeholder: "Digite seu email",
-        validators: ["required", "email"],
-      },
-      {
-        type: "text",
-        value: "",
-        name: "telefone",
-        label: "Telefone",
-        placeholder: "(11) 99999-9999",
-        validators: [
-          "required",
-          "pattern:^\\([0-9]{2}\\)\\s[0-9]{4,5}-[0-9]{4}$",
-        ],
-      },
-    ],
-    [
-      {
-        type: "text",
-        value: "",
-        name: "cpf",
-        label: "CPF",
-        placeholder: "000.000.000-00",
-        validators: [
-          "required",
-          "pattern:^[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}$",
-        ],
-      },
-      {
-        type: "number",
-        value: "",
-        name: "idade",
-        label: "Idade",
-        placeholder: "Digite sua idade",
-        validators: ["required", "min:0", "max:120"],
-        min: 0,
-        max: 120,
-      },
-    ],
-    [
-      {
-        type: "multiselect",
-        value: [],
-        name: "disciplinas",
-        label: "Disciplinas",
-        placeholder: "Selecione as disciplinas",
-        validators: ["required"],
-        options: [
-          { hash: "mat", descricao: "Matemática" },
-          { hash: "por", descricao: "Português" },
-          { hash: "cie", descricao: "Ciências" },
-          { hash: "his", descricao: "História" },
-          { hash: "geo", descricao: "Geografia" },
-          { hash: "ing", descricao: "Inglês" },
-          { hash: "edf", descricao: "Educação Física" },
-          { hash: "art", descricao: "Artes" },
-        ],
-      },
-      {
-        type: "multiselect",
-        value: [],
-        name: "habilidades",
-        label: "Habilidades Técnicas",
-        placeholder: "Escolha suas habilidades",
-        validators: ["required"],
-        options: [
-          { hash: "js", descricao: "JavaScript" },
-          { hash: "ts", descricao: "TypeScript" },
-          { hash: "angular", descricao: "Angular" },
-          { hash: "react", descricao: "React" },
-          { hash: "vue", descricao: "Vue.js" },
-          { hash: "node", descricao: "Node.js" },
-          { hash: "python", descricao: "Python" },
-          { hash: "java", descricao: "Java" },
-          { hash: "csharp", descricao: "C#" },
-          { hash: "php", descricao: "PHP" },
-          { hash: "sql", descricao: "SQL" },
-          { hash: "mongodb", descricao: "MongoDB" },
-        ],
-      },
-    ],
-  ];
+  started: boolean = false;
+  @Input() scheme: FormField[][] = []
 
   // Map de tokens para cada chave
   dynamicTokens = new Map<string, InjectionToken<any>>();
@@ -323,7 +55,7 @@ export class DynamicFormComponent {
     multiselect: MultiSelectFieldComponent,
   };
 
-  form!: FormGroup;
+  form?: FormGroup;
 
   // Propriedades para controle de edição
   private originalFormData: any = {};
@@ -336,6 +68,10 @@ export class DynamicFormComponent {
     private injector: Injector,
     private cdr: ChangeDetectorRef,
   ) {
+  }
+
+  start(scheme: FormField[][]) {
+    this.scheme = scheme;
     this.form = this.fb.group({});
     this.scheme.forEach((row) => {
       row.forEach((field) => {
@@ -353,17 +89,16 @@ export class DynamicFormComponent {
         );
       });
     });
-    console.log(this.form.controls);
 
-    // Observar mudanças no formulário para detectar alterações
+    // Observar mudanças no formulario para detectar alteracoes
     this.form.valueChanges.subscribe(() => {
-      // Usar setTimeout para garantir que a mudança seja processada
+      // Usar setTimeout para garantir que a mudanca seja processada
       setTimeout(() => {
         this.checkForChanges();
       }, 0);
     });
 
-    // Também observar mudanças em status (dirty, touched)
+    // Tambem observar mudancas em status (dirty, touched)
     this.form.statusChanges.subscribe(() => {
       if (this.isEditMode) {
         setTimeout(() => {
@@ -371,20 +106,17 @@ export class DynamicFormComponent {
         }, 0);
       }
     });
+    this.started = true;
   }
 
   createFieldInjector(field: FormField) {
-    // Usar o nome do campo como chave do cache
     const cacheKey = field.name;
 
-    // Se já existe no cache, retornar o injector existente
     if (this.fieldInjectorsCache.has(cacheKey)) {
       return this.fieldInjectorsCache.get(cacheKey)!;
     }
-
-    // Criar novo injector
     const providers: StaticProvider[] = [
-      { provide: FormControl, useValue: this.form.get(field.name) },
+      { provide: FormControl, useValue: this.form?.get(field.name) },
     ];
 
     Object.keys(field).forEach((key) => {
@@ -398,18 +130,14 @@ export class DynamicFormComponent {
       providers,
       parent: this.injector,
     });
-
-    // Armazenar no cache
     this.fieldInjectorsCache.set(cacheKey, injector);
     return injector;
   }
 
-  // Método para obter ID consistente do campo
   getFieldId(field: FormField): string {
     return field.name;
   }
 
-  // Método auxiliar para gerar IDs únicos e contextuais
   generateFieldId(
     fieldName: string,
     fieldType: string,
@@ -429,8 +157,6 @@ export class DynamicFormComponent {
         map.push(v);
         return;
       }
-
-      // Se for uma string, mapear para o validator correspondente
       if (typeof v === "string") {
         if (v === "required") map.push(Validators.required);
         if (v === "email") map.push(Validators.email);
@@ -457,7 +183,7 @@ export class DynamicFormComponent {
         }
       }
 
-      // Se for um objeto com configurações customizadas
+      // objeto com config customizadas
       if (typeof v === "object" && v !== null) {
         if (v.type === "minLength") map.push(Validators.minLength(v.value));
         if (v.type === "maxLength") map.push(Validators.maxLength(v.value));
@@ -486,7 +212,6 @@ export class DynamicFormComponent {
     return field.name || index.toString();
   }
 
-  // Método para debug - monitora eventos de focus
   onFieldFocus(fieldName: string) {
     console.log(`Campo ${fieldName} recebeu foco`);
   }
@@ -495,7 +220,6 @@ export class DynamicFormComponent {
     console.log(`Campo ${fieldName} perdeu foco`);
   }
 
-  // Método para limpar cache se necessário (útil para debugging)
   clearInjectorsCache() {
     this.fieldInjectorsCache.clear();
     console.log("Cache de injectors limpo");
@@ -554,7 +278,7 @@ export class DynamicFormComponent {
     const formErrors: any = {};
 
     Object.keys(this.form.controls).forEach((key) => {
-      const controlErrors = this.form.get(key)?.errors;
+      const controlErrors = this.form?.get(key)?.errors;
       if (controlErrors) {
         formErrors[key] = controlErrors;
       }
@@ -565,13 +289,13 @@ export class DynamicFormComponent {
 
   // Método para verificar se um campo específico tem erro
   hasFieldError(fieldName: string, errorType: string): boolean {
-    const field = this.form.get(fieldName);
+    const field = this.form?.get(fieldName);
     return !!(field && field.hasError(errorType) && field.touched);
   }
 
   // Método para obter mensagem de erro personalizada
   getErrorMessage(fieldName: string): string {
-    const field = this.form.get(fieldName);
+    const field = this.form?.get(fieldName);
     if (!field || !field.errors || !field.touched) {
       return "";
     }
@@ -755,7 +479,7 @@ export class DynamicFormComponent {
     if (!this.isEditMode) return false;
 
     const originalValue = this.originalFormData[fieldName];
-    const currentValue = this.form.get(fieldName)?.value;
+    const currentValue = this.form?.get(fieldName)?.value;
 
     // Usar deepEqual para comparação correta (incluindo arrays)
     return !this.deepEqual(originalValue, currentValue);
@@ -866,8 +590,8 @@ export class DynamicFormComponent {
     console.log("🔧 Demonstrando funcionalidades do MultiSelect");
 
     // Testar seleção programática
-    const disciplinasControl = this.form.get("disciplinas");
-    const habilidadesControl = this.form.get("habilidades");
+    const disciplinasControl = this.form?.get("disciplinas");
+    const habilidadesControl = this.form?.get("habilidades");
 
     if (disciplinasControl) {
       disciplinasControl.setValue(["mat", "cie", "his"]);
@@ -887,7 +611,7 @@ export class DynamicFormComponent {
     this.scheme.forEach((row, rowIndex) => {
       row.forEach((field, fieldIndex) => {
         if (field.type === "multiselect") {
-          const control = this.form.get(field.name);
+          const control = this.form?.get(field.name);
           const selectedValues = control?.value || [];
           const selectedOptions = field.options.filter((opt) =>
             selectedValues.includes(opt.hash),
@@ -916,7 +640,7 @@ export class DynamicFormComponent {
     setTimeout(() => {
       // Testar mudança em qualquer campo array
       Object.keys(this.form.controls).forEach((fieldName) => {
-        const control = this.form.get(fieldName);
+        const control = this.form?.get(fieldName);
         const currentValue = control?.value;
 
         // Se é um array, testar mudança
@@ -950,7 +674,7 @@ export class DynamicFormComponent {
 
     // Verificar cada campo array especificamente
     Object.keys(this.form.controls).forEach((fieldName) => {
-      const control = this.form.get(fieldName);
+      const control = this.form?.get(fieldName);
       const currentValue = control?.value;
 
       if (Array.isArray(currentValue)) {

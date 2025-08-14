@@ -391,3 +391,15 @@ label {
 .checkbox-input:checked + .checkbox-custom .checkbox-icon {
   animation: checkboxCheck 0.2s ease-in-out;
 }
+
+.button-primary {
+  border: 1px solid #242cc2;
+  font-family: Archivo-Bold;
+  font-size: 16px;
+  line-height: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #fff;
+  background-color: #242cc2;
+  height: 40px;
+}

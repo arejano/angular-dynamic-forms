@@ -1,4 +1,6 @@
-<form>
+<div *ngIf="scheme.length === 0" class="">FormScheme nao foi informado</div>
+
+<form *ngIf="started">
   <div *ngFor="let row of scheme; trackBy: trackByRowIndex" class="form-row">
     <div
       *ngFor="let field of row; trackBy: trackByFieldName"
@@ -19,31 +21,31 @@
       </div>
       <div
         class="form-msg"
-        *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched"
+        *ngIf="form?.get(field.name)?.invalid && form?.get(field.name)?.touched"
       >
-        <span *ngIf="form.get(field.name)?.errors?.['required']">
+        <span *ngIf="form?.get(field.name)?.errors?.['required']">
           Campo obrigatório
         </span>
-        <span *ngIf="form.get(field.name)?.errors?.['minlength']">
-          Mínimo de
-          {{ form.get(field.name)?.errors?.["minlength"]?.requiredLength }}
+        <span *ngIf="form?.get(field.name)?.errors?.['minlength']">
+          Mínimo de {{
+          form?.get(field.name)?.errors?.["minlength"]?.requiredLength }}
           caracteres
         </span>
-        <span *ngIf="form.get(field.name)?.errors?.['maxlength']">
-          Máximo de
-          {{ form.get(field.name)?.errors?.["maxlength"]?.requiredLength }}
+        <span *ngIf="form?.get(field.name)?.errors?.['maxlength']">
+          Máximo de {{
+          form?.get(field.name)?.errors?.["maxlength"]?.requiredLength }}
           caracteres
         </span>
-        <span *ngIf="form.get(field.name)?.errors?.['min']">
-          Valor mínimo: {{ form.get(field.name)?.errors?.["min"]?.min }}
+        <span *ngIf="form?.get(field.name)?.errors?.['min']">
+          Valor mínimo: {{ form?.get(field.name)?.errors?.["min"]?.min }}
         </span>
-        <span *ngIf="form.get(field.name)?.errors?.['max']">
-          Valor máximo: {{ form.get(field.name)?.errors?.["max"]?.max }}
+        <span *ngIf="form?.get(field.name)?.errors?.['max']">
+          Valor máximo: {{ form?.get(field.name)?.errors?.["max"]?.max }}
         </span>
-        <span *ngIf="form.get(field.name)?.errors?.['pattern']">
+        <span *ngIf="form?.get(field.name)?.errors?.['pattern']">
           Formato inválido
         </span>
-        <span *ngIf="form.get(field.name)?.errors?.['email']">
+        <span *ngIf="form?.get(field.name)?.errors?.['email']">
           Email inválido
         </span>
       </div>
@@ -125,7 +127,7 @@
     <button
       type="submit"
       (click)="onSubmit()"
-      [disabled]="form.invalid || (isEditMode && !hasChanges)"
+      [disabled]="form?.invalid || (isEditMode && !hasChanges)"
       class="submit-btn"
     >
       {{ isEditMode ? "Salvar Alterações" : "Enviar Formulário" }}
