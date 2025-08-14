@@ -1,0 +1,258 @@
+<div
+  class="multi-select-container"
+  #container
+  tabindex="0"
+  (keydown)="onKeyDown($event)"
+>
+  <div
+    class="multi-select-input"
+    [class.multi-select-open]="isDropdownOpen"
+    [class.multi-select-has-value]="hasSelection()"
+    (click)="toggleDropdown()"
+    [id]="fieldId"
+  >
+    <!-- Conteúdo do campo quando há seleções -->
+    <div
+      class="selected-content"
+      *ngIf="hasSelection()"
+      style="
+        display: flex;
+        align-items: center;
+        flex: 1;
+        gap: 6px;
+        overflow: hidden;
+      "
+    >
+      <!-- Items selecionados com botão de remoção -->
+      <div class="selected-items">
+        <div
+          *ngFor="
+            let item of selectedItems.slice(0, maxVisibleItems);
+            trackBy: trackBySelectedHash
+          "
+          class="selected-tag"
+        >
+          <button
+            type="button"
+            class="remove-item-btn"
+            (click)="removeSelectedItem(item, $event)"
+            title="Remover {{ item.descricao }}"
+          >
+            ×
+          </button>
+          <span class="selected-tag-text">{{ item.descricao }}</span>
+        </div>
+
+        <!-- Contador de items ocultos -->
+        <span class="hidden-count" *ngIf="hiddenCount > 0">
+          +{{ hiddenCount }}
+        </span>
+      </div>
+
+      <!-- Botão para limpar tudo -->
+      <button
+        type="button"
+        class="clear-all-btn"
+        (click)="clearAll($event)"
+        title="Limpar tudo"
+        style="
+          background: none;
+          border: none;
+          color: #9ca3af;
+          font-size: 18px;
+          cursor: pointer;
+          padding: 0;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+        "
+      >
+        ×
+      </button>
+    </div>
+
+    <!-- Placeholder quando não há seleções -->
+    <div class="placeholder-content" *ngIf="!hasSelection()" style="flex: 1">
+      <span class="placeholder-text">{{ placeholder }}</span>
+    </div>
+
+    <!-- Seta do dropdown -->
+    <div
+      class="dropdown-arrow"
+      style="
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+      "
+      [style.transform]="
+        isDropdownOpen ? 'translateY(-50%) rotate(180deg)' : 'translateY(-50%)'
+      "
+    >
+      <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+        <path
+          d="M1 1L6 6L11 1"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Dropdown com opções -->
+  <div
+    class="multi-select-dropdown"
+    [class.dropdown-open]="isDropdownOpen"
+    #dropdown
+  >
+    <div
+      class="dropdown-content"
+      style="display: flex; flex-direction: column; height: 100%"
+    >
+      <!-- Campo de pesquisa -->
+      <div
+        class="search-container"
+        style="padding: 8px 12px; border-bottom: 1px solid #e5e7eb"
+      >
+        <input
+          #searchInput
+          type="text"
+          class="search-input"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+          (keydown)="onSearchKeyDown($event)"
+          (focus)="onSearchFocus()"
+          placeholder="Pesquisar opções..."
+          (click)="$event.stopPropagation()"
+        />
+      </div>
+
+      <!-- Header do dropdown -->
+      <div class="dropdown-header" *ngIf="options && options.length > 0">
+        <span class="selected-count">
+          {{ getSelectedCount() }} de {{ options.length }} selecionados
+        </span>
+        <div
+          class="header-actions"
+          style="display: flex; gap: 8px; align-items: center"
+        >
+          <button
+            type="button"
+            class="select-all-btn"
+            (click)="toggleSelectAll()"
+            [class.all-selected]="isAllSelected"
+          >
+            {{ isAllSelected ? "Desmarcar todos" : "Selecionar todos" }}
+          </button>
+          <button
+            type="button"
+            class="clear-all-link"
+            (click)="clearAll($event)"
+            *ngIf="hasSelection()"
+          >
+            Limpar
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de opções -->
+      <div class="options-list">
+        <div
+          class="option-item"
+          *ngFor="
+            let option of filteredOptions;
+            let i = index;
+            trackBy: trackByHash
+          "
+          [class.option-selected]="isOptionSelected(option)"
+          [class.option-hovered]="isOptionHovered(i)"
+          (click)="onOptionClick(option, $event)"
+          (mouseenter)="onOptionHover(i)"
+          [attr.data-index]="i"
+        >
+          <!-- Checkbox customizado -->
+          <div class="option-checkbox">
+            <div
+              class="checkbox-inner"
+              [class.checkbox-checked]="isOptionSelected(option)"
+            >
+              <svg
+                *ngIf="isOptionSelected(option)"
+                width="12"
+                height="9"
+                viewBox="0 0 12 9"
+                fill="none"
+              >
+                <path
+                  d="M1 4.5L4.5 8L11 1.5"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Texto da opção -->
+          <span class="option-text" style="flex: 1; font-size: 14px">{{
+            option.descricao
+          }}</span>
+        </div>
+
+        <!-- Mensagem quando não há opções filtradas -->
+        <div
+          class="no-options"
+          *ngIf="filteredOptions.length === 0 && searchTerm"
+          style="
+            padding: 20px;
+            text-align: center;
+            color: #9ca3af;
+            font-style: italic;
+            font-size: 14px;
+          "
+        >
+          Nenhuma opção encontrada para "{{ searchTerm }}"
+        </div>
+
+        <!-- Mensagem quando não há opções -->
+        <div
+          class="no-options"
+          *ngIf="!options || options.length === 0"
+          style="
+            padding: 20px;
+            text-align: center;
+            color: #9ca3af;
+            font-style: italic;
+            font-size: 14px;
+          "
+        >
+          Nenhuma opção disponível
+        </div>
+      </div>
+
+      <!-- Dicas de teclado -->
+      <div
+        class="keyboard-hints"
+        *ngIf="isDropdownOpen"
+        style="
+          padding: 6px 12px;
+          border-top: 1px solid #e5e7eb;
+          background-color: #f9fafb;
+          font-size: 11px;
+          color: #6b7280;
+          text-align: center;
+        "
+      >
+        <small>
+          Use ↑↓ para navegar, Enter/Espaço para selecionar, Esc para fechar
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

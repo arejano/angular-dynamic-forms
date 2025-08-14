@@ -1,0 +1,393 @@
+@import "styles/variables.scss";
+
+/* Original field styles */
+.field-container {
+  margin: 5px;
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-width: 200px;
+}
+
+label {
+  width: 100%;
+}
+
+app-date-field {
+  flex: 1 1;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  span {
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+  }
+}
+
+/* AutoForm Components Global Styles */
+.auto-form {
+  font-family: $font-family-sans-serif;
+
+  .form-field {
+    margin-bottom: $spacing-3;
+
+    .form-label {
+      font-family: $font-family-sans-serif;
+      font-weight: 600;
+      color: $dark-grey;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      margin-bottom: $spacing-2;
+
+      .required {
+        color: $vermelho-danger;
+        margin-left: 0.125rem;
+      }
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid $light-grey-blue;
+      border-radius: $rounded-pixel;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-family: $font-family-sans-serif;
+      transition: all 0.15s ease-in-out;
+      background-color: $color-neutral-white;
+
+      &:focus {
+        outline: none;
+        border-color: $roxo-custom;
+        box-shadow: 0 0 0 3px rgba(96, 112, 180, 0.1);
+      }
+
+      &:disabled {
+        background-color: $neutral-light-2;
+        color: $medium-grey;
+        cursor: not-allowed;
+      }
+
+      &.is-valid {
+        border-color: $color-success-dark;
+
+        &:focus {
+          border-color: $color-success-dark;
+          box-shadow: 0 0 0 3px rgba(40, 151, 90, 0.1);
+        }
+      }
+
+      &.is-invalid {
+        border-color: $error;
+
+        &:focus {
+          border-color: $error;
+          box-shadow: 0 0 0 3px rgba(230, 86, 55, 0.1);
+        }
+      }
+    }
+
+    .error-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-top: $spacing-1;
+
+      .error-text {
+        color: $error;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin: 0;
+      }
+    }
+  }
+
+  /* Form Actions */
+  .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: $spacing-3;
+    border-top: 1px solid $neutral-light;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: $rounded-pixel;
+      font-family: $font-family-sans-serif;
+      transition: all 0.15s ease-in-out;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(96, 112, 180, 0.1);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      &.btn-primary {
+        background-color: $roxo-custom;
+        color: $color-neutral-white;
+        border-color: $roxo-custom;
+
+        &:hover:not(:disabled) {
+          background-color: darken($roxo-custom, 10%);
+          border-color: darken($roxo-custom, 10%);
+        }
+      }
+
+      &.btn-secondary {
+        background-color: $medium-grey;
+        color: $color-neutral-white;
+        border-color: $medium-grey;
+
+        &:hover:not(:disabled) {
+          background-color: darken($medium-grey, 10%);
+          border-color: darken($medium-grey, 10%);
+        }
+      }
+
+      &.btn-outline-secondary {
+        background-color: transparent;
+        color: $medium-grey;
+        border-color: $light-grey;
+
+        &:hover:not(:disabled) {
+          background-color: $neutral-light-2;
+          color: $dark-grey;
+          border-color: $neutral;
+        }
+      }
+    }
+  }
+
+  /* Specific component styles */
+  .checkbox-container {
+    .checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 500;
+      line-height: 1.5;
+
+      .checkbox-custom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid $light-grey-blue;
+        border-radius: 0.25rem;
+        background-color: $color-neutral-white;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+      }
+
+      .checkbox-text {
+        color: $dark-grey;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+      }
+    }
+
+    .checkbox-input:checked + .checkbox-custom {
+      background-color: $roxo-custom;
+      border-color: $roxo-custom;
+    }
+
+    .checkbox-input:focus + .checkbox-custom {
+      box-shadow: 0 0 0 3px rgba(96, 112, 180, 0.1);
+    }
+  }
+
+  .multi-select-container {
+    .selected-item {
+      background-color: $roxo-custom;
+      color: $color-neutral-white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .options-header {
+      border: 1px solid $light-grey-blue;
+      border-radius: $rounded-pixel;
+      background-color: $color-neutral-white;
+
+      &:hover {
+        border-color: $neutral;
+      }
+    }
+
+    .option-item {
+      &:hover:not(.disabled) {
+        background-color: $neutral-light-2;
+      }
+
+      &.selected {
+        background-color: lighten($roxo-custom, 40%);
+        color: $roxo-custom;
+      }
+    }
+  }
+
+  .textarea-container {
+    .character-count,
+    .word-count {
+      font-size: 0.75rem;
+      color: $medium-grey;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+      justify-content: flex-end;
+    }
+
+    .current-count {
+      &.warning {
+        color: $warning;
+        font-weight: 600;
+      }
+
+      &.danger {
+        color: $error;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .validation-indicator {
+    .icon {
+      &.valid {
+        background-color: $color-success-dark;
+        color: $color-neutral-white;
+      }
+
+      &.invalid {
+        background-color: $error;
+        color: $color-neutral-white;
+      }
+    }
+  }
+
+  /* Stars rating component */
+  .custom-rating {
+    .star {
+      color: $light-grey;
+      transition: all 0.2s ease;
+
+      &.filled {
+        color: $warning;
+      }
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .form-actions {
+      flex-direction: column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Debug info */
+  .debug-info {
+    background-color: $neutral-light-2;
+    border-left: 4px solid $medium-grey;
+    padding: 1rem;
+    border-radius: $rounded-pixel;
+    margin-top: 2rem;
+
+    h5 {
+      margin: 0 0 0.75rem 0;
+      color: $dark-grey;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    pre {
+      background-color: $color-neutral-white;
+      padding: 0.75rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      margin: 0;
+      overflow-x: auto;
+      font-family: $font-family-mono;
+    }
+  }
+}
+
+/* Form errors global */
+.form-errors {
+  .alert-danger {
+    background-color: lighten($error, 45%);
+    border: 1px solid lighten($error, 30%);
+    color: darken($error, 10%);
+    padding: 0.75rem 1rem;
+    border-radius: $rounded-pixel;
+    font-size: 0.875rem;
+  }
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes checkboxCheck {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.auto-form .form-field {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.checkbox-input:checked + .checkbox-custom .checkbox-icon {
+  animation: checkboxCheck 0.2s ease-in-out;
+}

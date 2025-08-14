@@ -1,0 +1,35 @@
+<div class="textarea-field-container">
+  <textarea
+    [formControl]="control"
+    [id]="fieldId"
+    [placeholder]="placeholder || ''"
+    [maxLength]="maxLength || undefined"
+    class="textarea-input"
+  ></textarea>
+
+  <div class="textarea-status" [class.near-limit]="isNearLimit()">
+    <div class="status-left">
+      <!-- <span class="word-count" -->
+      <!-- >{{ currentWordCount }} palavra{{ currentWordCount !== 1 ? "s" : "" -->
+      <!-- }}</span -->
+      <!-- > -->
+    </div>
+    <div class="status-right">
+      <span
+        class="char-count"
+        [class.warning]="getCharCountStatus() === 'warning'"
+        [class.danger]="getCharCountStatus() === 'danger'"
+      >
+        {{ currentCharCount }}{{ maxLength ? "/" + maxLength : "" }} caractere{{
+        currentCharCount !== 1 ? "s" : "" }}
+      </span>
+      <span
+        *ngIf="maxLength && getRemainingChars() <= 20"
+        class="remaining-chars"
+      >
+        ({{ getRemainingChars() }} restante{{ getRemainingChars() !== 1 ? "s" :
+        "" }})
+      </span>
+    </div>
+  </div>
+</div>

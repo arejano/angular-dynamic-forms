@@ -1,0 +1,55 @@
+.text-field-container {
+  display: flex;
+
+  input {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    border: solid 1px #adb2ba;
+    padding: 0px 16px;
+    height: 38px;
+    transition: all 0.25s linear;
+    font-family: "Nunito-Regular";
+    font-size: 16px;
+
+    &:focus {
+      border-color: #242cc2;
+      background-color: #f8f9fb;
+      color: #666;
+      box-shadow: none;
+    }
+
+    &.error {
+      border-color: red;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #6070b4;
+    }
+
+    &:disabled {
+      background-color: #c3c8d1;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    &.is-valid {
+      border-color: #28975a;
+
+      &:focus {
+        border-color: #28975a;
+        box-shadow: 0 0 0 3px rgba(40, 151, 90, 0.1);
+      }
+    }
+
+    &.is-invalid {
+      border-color: #e65637;
+
+      &:focus {
+        border-color: #e65637;
+        box-shadow: 0 0 0 3px rgba(230, 86, 55, 0.1);
+      }
+    }
+  }
+}

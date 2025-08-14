@@ -1,0 +1,31 @@
+<div class="app-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>Angular Playground</h1>
+    </div>
+
+    <div class="nav-links">
+      <a routerLink="/dyn-forms" routerLinkActive="active" class="nav-link">
+        <i class="icon">📝</i>
+        DynamicForms
+      </a>
+      <a
+        routerLink="/autoform-examples"
+        routerLinkActive="active"
+        class="nav-link"
+      >
+        <i class="icon">📝</i>
+        AutoForm Exemplos
+      </a>
+
+      <a routerLink="/demo-filter" routerLinkActive="active" class="nav-link">
+        <i class="icon">🔍</i>
+        Demo Filter
+      </a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

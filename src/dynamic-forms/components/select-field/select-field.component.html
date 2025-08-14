@@ -1,0 +1,6 @@
+<select [formControl]="control" [id]="fieldId">
+  <option value="">{{ placeholder || "Selecione uma opção" }}</option>
+  <option *ngFor="let opt of options" [value]="opt.hash">
+    {{ opt.descricao }}
+  </option>
+</select>

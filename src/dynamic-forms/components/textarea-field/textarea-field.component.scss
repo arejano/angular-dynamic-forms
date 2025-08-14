@@ -1,0 +1,125 @@
+.textarea-field-container {
+  width: 100%;
+  /* display: flex; */
+  /* flex-direction: column; */
+  gap: 4px;
+}
+
+.textarea-input {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.5;
+  background-color: #ffffff;
+  resize: vertical;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  &:hover:not(:focus) {
+    border-color: #9ca3af;
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  // Estados de validação
+  &.ng-invalid.ng-touched {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+
+    &:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  &.ng-valid.ng-touched {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+
+    &:focus {
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+  }
+}
+
+.textarea-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #6b7280;
+  padding: 0 2px;
+  min-height: 16px;
+
+  &.near-limit {
+    .char-count {
+      font-weight: 500;
+    }
+  }
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.word-count {
+  color: #6b7280;
+  font-weight: normal;
+}
+
+.char-count {
+  color: #6b7280;
+
+  &.warning {
+    color: #f59e0b;
+  }
+
+  &.danger {
+    color: #ef4444;
+    font-weight: 600;
+  }
+}
+
+.remaining-chars {
+  color: #9ca3af;
+  font-style: italic;
+
+  .textarea-status.near-limit & {
+    color: #f59e0b;
+    font-weight: 500;
+  }
+}
+
+// Responsividade
+@media (max-width: 640px) {
+  .textarea-status {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: 11px;
+  }
+
+  .status-right {
+    gap: 4px;
+  }
+}
