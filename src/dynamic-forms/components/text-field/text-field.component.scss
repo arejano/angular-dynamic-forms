@@ -19,6 +19,13 @@
       box-shadow: none;
     }
 
+    &:hover {
+      border-color: #242cc2;
+      background-color: #f8f9fb;
+      color: #666;
+      box-shadow: none;
+    }
+
     &.error {
       border-color: red;
     }

@@ -1,147 +1,150 @@
-<div *ngIf="scheme.length === 0" class="">FormScheme nao foi informado</div>
-
-<form *ngIf="started">
-  <div *ngFor="let row of scheme; trackBy: trackByRowIndex" class="form-row">
-    <div
-      *ngFor="let field of row; trackBy: trackByFieldName"
-      class="form-field"
-    >
-      <div class="form-label">
-        <label [for]="getFieldId(field)">{{ field.label }}</label>
-        <span>*</span>
-      </div>
-      <div class="form-component">
-        <ng-container
-          *ngComponentOutlet="
+<div class="dynamic-form-container">
+  <div *ngIf="scheme.length === 0" class="">FormScheme nao foi informado</div>
+  <form *ngIf="started">
+    <div *ngFor="let row of scheme; trackBy: trackByRowIndex" class="form-row">
+      <div
+        *ngFor="let field of row; trackBy: trackByFieldName"
+        class="form-field"
+      >
+        <div class="form-label">
+          <label [for]="getFieldId(field)"
+            >{{ field.label }}
+            <span>*</span>
+          </label>
+        </div>
+        <div class="form-component">
+          <ng-container
+            *ngComponentOutlet="
             componentMap[field.type];
             injector: createFieldInjector(field)
           "
+          >
+          </ng-container>
+        </div>
+        <div
+          class="form-msg"
+          *ngIf="form?.get(field.name)?.invalid && form?.get(field.name)?.touched"
         >
-        </ng-container>
-      </div>
-      <div
-        class="form-msg"
-        *ngIf="form?.get(field.name)?.invalid && form?.get(field.name)?.touched"
-      >
-        <span *ngIf="form?.get(field.name)?.errors?.['required']">
-          Campo obrigatório
-        </span>
-        <span *ngIf="form?.get(field.name)?.errors?.['minlength']">
-          Mínimo de {{
-          form?.get(field.name)?.errors?.["minlength"]?.requiredLength }}
-          caracteres
-        </span>
-        <span *ngIf="form?.get(field.name)?.errors?.['maxlength']">
-          Máximo de {{
-          form?.get(field.name)?.errors?.["maxlength"]?.requiredLength }}
-          caracteres
-        </span>
-        <span *ngIf="form?.get(field.name)?.errors?.['min']">
-          Valor mínimo: {{ form?.get(field.name)?.errors?.["min"]?.min }}
-        </span>
-        <span *ngIf="form?.get(field.name)?.errors?.['max']">
-          Valor máximo: {{ form?.get(field.name)?.errors?.["max"]?.max }}
-        </span>
-        <span *ngIf="form?.get(field.name)?.errors?.['pattern']">
-          Formato inválido
-        </span>
-        <span *ngIf="form?.get(field.name)?.errors?.['email']">
-          Email inválido
-        </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['required']">
+            Campo obrigatório
+          </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['minlength']">
+            Mínimo de {{
+            form?.get(field.name)?.errors?.["minlength"]?.requiredLength }}
+            caracteres
+          </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['maxlength']">
+            Máximo de {{
+            form?.get(field.name)?.errors?.["maxlength"]?.requiredLength }}
+            caracteres
+          </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['min']">
+            Valor mínimo: {{ form?.get(field.name)?.errors?.["min"]?.min }}
+          </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['max']">
+            Valor máximo: {{ form?.get(field.name)?.errors?.["max"]?.max }}
+          </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['pattern']">
+            Formato inválido
+          </span>
+          <span *ngIf="form?.get(field.name)?.errors?.['email']">
+            Email inválido
+          </span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Status do formulário -->
-  <div class="form-status" *ngIf="isEditMode">
-    <div class="status-info">
-      <span class="mode-indicator">
-        📝 Modo de Edição - ID: {{ currentFormData?.hash }}
-      </span>
-      <span class="changes-indicator" *ngIf="hasChanges">
-        ⚠️ Alterações não salvas
-      </span>
-      <span class="no-changes-indicator" *ngIf="!hasChanges">
-        ✅ Sem alterações
-      </span>
+    <!-- Status do formulário -->
+    <div class="form-status" *ngIf="isEditMode">
+      <div class="status-info">
+        <span class="mode-indicator">
+          📝 Modo de Edição - ID: {{ currentFormData?.hash }}
+        </span>
+        <span class="changes-indicator" *ngIf="hasChanges">
+          ⚠️ Alterações não salvas
+        </span>
+        <span class="no-changes-indicator" *ngIf="!hasChanges">
+          ✅ Sem alterações
+        </span>
+      </div>
     </div>
-  </div>
 
-  <!-- Seção de exemplos para demonstrar funcionalidades -->
-  <div class="examples-section">
-    <h3>Exemplos de Uso:</h3>
-    <div class="example-buttons">
+    <!-- Seção de exemplos para demonstrar funcionalidades -->
+    <div class="examples-section">
+      <h3>Exemplos de Uso:</h3>
+      <div class="example-buttons">
+        <button
+          type="button"
+          (click)="loadExampleCreateMode()"
+          class="example-btn create-example"
+        >
+          🆕 Modo Criação
+        </button>
+        <button
+          type="button"
+          (click)="loadExampleEditMode()"
+          class="example-btn edit-example"
+        >
+          ✏️ Carregar Exemplo Completo
+        </button>
+        <button
+          type="button"
+          (click)="loadExamplePartialData()"
+          class="example-btn partial-example"
+        >
+          📋 Carregar Dados Parciais
+        </button>
+        <button
+          type="button"
+          (click)="simulateLoadFromAPI('api-test-123')"
+          class="example-btn api-example"
+        >
+          🔄 Simular API
+        </button>
+        <button
+          type="button"
+          (click)="demonstrateMultiSelect()"
+          class="example-btn multiselect-example"
+        >
+          🔧 Testar MultiSelect
+        </button>
+        <button
+          type="button"
+          (click)="testMultiSelectChanges()"
+          class="example-btn changes-test-example"
+        >
+          🧪 Testar Mudanças
+        </button>
+        <button
+          type="button"
+          (click)="debugFormState()"
+          class="example-btn debug-example"
+        >
+          🔍 Debug Estado
+        </button>
+      </div>
+    </div>
+
+    <div class="form-actions">
       <button
-        type="button"
-        (click)="loadExampleCreateMode()"
-        class="example-btn create-example"
+        type="submit"
+        (click)="onSubmit()"
+        [disabled]="form?.invalid || (isEditMode && !hasChanges)"
+        class="submit-btn"
       >
-        🆕 Modo Criação
+        {{ isEditMode ? "Salvar Alterações" : "Enviar Formulário" }}
+      </button>
+      <button type="button" (click)="resetForm()" class="reset-btn">
+        {{ isEditMode ? "Restaurar" : "Limpar" }}
       </button>
       <button
         type="button"
-        (click)="loadExampleEditMode()"
-        class="example-btn edit-example"
+        (click)="clearFormData()"
+        class="new-btn"
+        *ngIf="isEditMode"
       >
-        ✏️ Carregar Exemplo Completo
-      </button>
-      <button
-        type="button"
-        (click)="loadExamplePartialData()"
-        class="example-btn partial-example"
-      >
-        📋 Carregar Dados Parciais
-      </button>
-      <button
-        type="button"
-        (click)="simulateLoadFromAPI('api-test-123')"
-        class="example-btn api-example"
-      >
-        🔄 Simular API
-      </button>
-      <button
-        type="button"
-        (click)="demonstrateMultiSelect()"
-        class="example-btn multiselect-example"
-      >
-        🔧 Testar MultiSelect
-      </button>
-      <button
-        type="button"
-        (click)="testMultiSelectChanges()"
-        class="example-btn changes-test-example"
-      >
-        🧪 Testar Mudanças
-      </button>
-      <button
-        type="button"
-        (click)="debugFormState()"
-        class="example-btn debug-example"
-      >
-        🔍 Debug Estado
+        Novo
       </button>
     </div>
-  </div>
-
-  <div class="form-actions">
-    <button
-      type="submit"
-      (click)="onSubmit()"
-      [disabled]="form?.invalid || (isEditMode && !hasChanges)"
-      class="submit-btn"
-    >
-      {{ isEditMode ? "Salvar Alterações" : "Enviar Formulário" }}
-    </button>
-    <button type="button" (click)="resetForm()" class="reset-btn">
-      {{ isEditMode ? "Restaurar" : "Limpar" }}
-    </button>
-    <button
-      type="button"
-      (click)="clearFormData()"
-      class="new-btn"
-      *ngIf="isEditMode"
-    >
-      Novo
-    </button>
-  </div>
-</form>
+  </form>
+</div>
