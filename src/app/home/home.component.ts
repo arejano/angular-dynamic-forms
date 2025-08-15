@@ -34,4 +34,9 @@ export class HomeComponent implements OnInit {
 
     this.formulario.start(scheme);
   }
+
+  getFormData() {
+    console.log(this.formulario.value())
+    this.formulario.clear();
+  }
 }

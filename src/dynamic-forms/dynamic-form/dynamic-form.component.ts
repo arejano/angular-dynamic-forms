@@ -38,13 +38,15 @@ import { FormDataDTO, FormField } from "../models";
   styleUrls: ["./dynamic-form.component.scss"],
 })
 export class DynamicFormComponent {
-  started: boolean = false;
   @Input() scheme: FormField[][] = []
+
+  debug_mode: boolean = true;
+  started: boolean = false;
 
   // Map de tokens para cada chave
   dynamicTokens = new Map<string, InjectionToken<any>>();
 
-  // Cache de injectors para evitar re-criação dos componentes
+  // Cache de injectors para evitar re-criacao dos componentes
   fieldInjectorsCache = new Map<string, Injector>();
 
   componentMap: Record<string, any> = {
@@ -57,7 +59,6 @@ export class DynamicFormComponent {
 
   form?: FormGroup;
 
-  // Propriedades para controle de edição
   private originalFormData: any = {};
   public currentFormData: FormDataDTO | null = null;
   public isEditMode: boolean = false;
@@ -90,7 +91,6 @@ export class DynamicFormComponent {
       });
     });
 
-    // Observar mudanças no formulario para detectar alteracoes
     this.form.valueChanges.subscribe(() => {
       // Usar setTimeout para garantir que a mudanca seja processada
       setTimeout(() => {
@@ -152,7 +152,7 @@ export class DynamicFormComponent {
     const map: any[] = [];
 
     validators.forEach((v) => {
-      // Se for uma função de validação do Angular (Validators.required, etc)
+      // Se for uma funcao de validacao do Angular (Validators.required, etc)
       if (typeof v === "function") {
         map.push(v);
         return;
@@ -183,7 +183,6 @@ export class DynamicFormComponent {
         }
       }
 
-      // objeto com config customizadas
       if (typeof v === "object" && v !== null) {
         if (v.type === "minLength") map.push(Validators.minLength(v.value));
         if (v.type === "maxLength") map.push(Validators.maxLength(v.value));
@@ -203,7 +202,6 @@ export class DynamicFormComponent {
     return this.dynamicTokens.get(key)!;
   }
 
-  // TrackBy functions para melhorar performance
   trackByRowIndex(index: number): number {
     return index;
   }
@@ -213,72 +211,59 @@ export class DynamicFormComponent {
   }
 
   onFieldFocus(fieldName: string) {
-    console.log(`Campo ${fieldName} recebeu foco`);
   }
 
   onFieldBlur(fieldName: string) {
-    console.log(`Campo ${fieldName} perdeu foco`);
   }
 
   clearInjectorsCache() {
     this.fieldInjectorsCache.clear();
-    console.log("Cache de injectors limpo");
   }
 
-  onSubmit() {
-    if (this.form.valid && (!this.isEditMode || this.hasChanges)) {
-      console.log("✅ Formulário válido - dados enviados:", this.form.value);
+  // onSubmit() {
+  //   if (this.form.valid && (!this.isEditMode || this.hasChanges)) {
+  //     console.log("✅ Formulário válido - dados enviados:", this.form.value);
 
-      if (this.isEditMode) {
-        console.log("🔄 Modo de edição - ID:", this.currentFormData?.hash);
-        console.log("📝 Campos alterados:", this.getChangedFields());
-        alert(
-          `Dados atualizados com sucesso! ID: ${this.currentFormData?.hash}`,
-        );
-      } else {
-        console.log("✨ Modo de criação - novo registro");
-        alert("Formulário enviado com sucesso!");
-      }
+  //     if (this.isEditMode) {
+  //       console.log("🔄 Modo de edição - ID:", this.currentFormData?.hash);
+  //       console.log("📝 Campos alterados:", this.getChangedFields());
+  //       alert(
+  //         `Dados atualizados com sucesso! ID: ${this.currentFormData?.hash}`,
+  //       );
+  //     } else {
+  //       console.log("✨ Modo de criação - novo registro");
+  //       alert("Formulário enviado com sucesso!");
+  //     }
 
-      // Aqui você pode implementar a lógica de envio
-      // Por exemplo: this.apiService.saveForm(this.form.value, this.currentFormData?.hash)
+  //     // Aqui você pode implementar a lógica de envio
+  //     // Por exemplo: this.apiService.saveForm(this.form.value, this.currentFormData?.hash)
 
-      // Atualizar dados originais após salvar (deep copy para arrays)
-      this.originalFormData = this.deepCopy(this.form.value);
-      this.hasChanges = false;
-      this.cdr.detectChanges();
-    } else if (this.isEditMode && !this.hasChanges) {
-      alert("Nenhuma alteração foi feita.");
-    } else {
-      console.log(
-        "❌ Formulário inválido - erros encontrados:",
-        this.getFormErrors(),
-      );
-      this.form.markAllAsTouched();
-      alert("Por favor, corrija os erros antes de enviar.");
-    }
-  }
-
-  logFormData() {
-    console.log(this.form?.value)
-  }
-
+  //     // Atualizar dados originais após salvar (deep copy para arrays)
+  //     this.originalFormData = this.deepCopy(this.form.value);
+  //     this.hasChanges = false;
+  //     this.cdr.detectChanges();
+  //   } else if (this.isEditMode && !this.hasChanges) {
+  //     alert("Nenhuma alteração foi feita.");
+  //   } else {
+  //     console.log(
+  //       "❌ Formulário inválido - erros encontrados:",
+  //       this.getFormErrors(),
+  //     );
+  //     this.form.markAllAsTouched();
+  //     alert("Por favor, corrija os erros antes de enviar.");
+  //   }
+  // }
 
   resetForm() {
     if (this.isEditMode) {
-      // Se estiver em modo de edição, restaurar valores originais
       this.form.patchValue(this.originalFormData);
-      console.log("🔄 Formulário restaurado para valores originais");
     } else {
-      // Se for criação, limpar completamente
       this.form.reset();
-      console.log("🔄 Formulário resetado");
     }
     this.hasChanges = false;
     this.cdr.detectChanges();
   }
 
-  // Método para obter todos os erros do formulário
   getFormErrors(): any {
     const formErrors: any = {};
 
@@ -441,7 +426,6 @@ export class DynamicFormComponent {
     Object.keys(this.originalFormData).forEach((key) => {
       const originalValue = this.originalFormData[key];
       const currentValue = currentValues[key];
-
       if (!this.deepEqual(originalValue, currentValue)) {
         changes[key] = {
           from: originalValue,
@@ -455,21 +439,18 @@ export class DynamicFormComponent {
 
   isFieldChanged(fieldName: string): boolean {
     if (!this.isEditMode) return false;
-
     const originalValue = this.originalFormData[fieldName];
     const currentValue = this.form?.get(fieldName)?.value;
-
     return !this.deepEqual(originalValue, currentValue);
   }
 
-  clearFormData(): void {
+  clear(): void {
     this.currentFormData = null;
     this.isEditMode = false;
     this.originalFormData = {};
     this.hasChanges = false;
     this.form.reset();
     this.cdr.detectChanges();
-    console.log("🆕 Formulário em modo de criação");
   }
 
   getFormStatus(): {
@@ -488,69 +469,32 @@ export class DynamicFormComponent {
     };
   }
 
-  loadExampleCreateMode(): void {
-    console.log("🆕 Exemplo: Modo de criação");
-    this.clearFormData();
-  }
+  // getMultiSelectInfo(): any {
+  //   const info: any = {};
 
-  loadExampleEditMode(): void {
-    const exampleDTO: FormDataDTO = {
-      hash: "0001",
-      anoLetivo: "2024",
-      redePagamento: "Pensi",
-      descricao:
-        "Lorem Lorem Lorem",
-      pontos: 5,
-      redes: "001",
-      disciplinas: ["mat", "por", "his"],
-      series: ["002"]
-    };
+  //   this.scheme.forEach((row, rowIndex) => {
+  //     row.forEach((field, fieldIndex) => {
+  //       if (field.type === "multiselect") {
+  //         const control = this.form?.get(field.name);
+  //         const selectedValues = control?.value || [];
+  //         const selectedOptions = field.options.filter((opt) =>
+  //           selectedValues.includes(opt.hash),
+  //         );
 
-    this.loadFormData(exampleDTO);
-  }
+  //         info[field.name] = {
+  //           label: field.label,
+  //           totalOptions: field.options.length,
+  //           selectedCount: selectedValues.length,
+  //           selectedValues: selectedValues,
+  //           selectedDescriptions: selectedOptions.map((opt) => opt.descricao),
+  //           position: { row: rowIndex, field: fieldIndex },
+  //         };
+  //       }
+  //     });
+  //   });
 
-  loadExamplePartialData(): void {
-    console.log("📋 Exemplo: Carregando dados parciais");
-    const partialDTO: FormDataDTO = {
-      hash: "xyz-789-uvw-012",
-      anoLetivo: "2023",
-      descricao: "Descrição básica do projeto",
-      email: "exemplo@teste.com",
-      prioridade: "media",
-      disciplinas: ["cie", "geo"],
-      habilidades: ["react", "node"],
-    };
-
-    this.loadFormData(partialDTO);
-  }
-
-  // Método para obter informações sobre campos multiselect
-  getMultiSelectInfo(): any {
-    const info: any = {};
-
-    this.scheme.forEach((row, rowIndex) => {
-      row.forEach((field, fieldIndex) => {
-        if (field.type === "multiselect") {
-          const control = this.form?.get(field.name);
-          const selectedValues = control?.value || [];
-          const selectedOptions = field.options.filter((opt) =>
-            selectedValues.includes(opt.hash),
-          );
-
-          info[field.name] = {
-            label: field.label,
-            totalOptions: field.options.length,
-            selectedCount: selectedValues.length,
-            selectedValues: selectedValues,
-            selectedDescriptions: selectedOptions.map((opt) => opt.descricao),
-            position: { row: rowIndex, field: fieldIndex },
-          };
-        }
-      });
-    });
-
-    return info;
-  }
+  //   return info;
+  // }
 
   debugFormState(): void {
     console.log("- isEditMode:", this.isEditMode);
@@ -578,7 +522,14 @@ export class DynamicFormComponent {
       }
     });
 
-    // Forçar detecção de mudanças para refletir visualmente
     this.checkForChanges();
+  }
+
+  value() {
+    return this.form?.value
+  }
+
+  valid() {
+    return this.form?.valid;
   }
 }

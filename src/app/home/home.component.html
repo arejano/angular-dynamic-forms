@@ -1,1 +1,6 @@
 <app-dynamic-form #formulario> </app-dynamic-form>
+<div class="">
+  <button [disabled]="!formulario.valid()" (click)="getFormData()">
+    Teste
+  </button>
+</div>
