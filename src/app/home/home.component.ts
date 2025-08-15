@@ -20,7 +20,8 @@ export class HomeComponent implements OnInit {
     const scheme: FormField | any[][] = [
       [
         defaultFields.anoLetivo,
-        defaultFields.redes
+        defaultFields.redes,
+        defaultFields.disciplinas
       ],
       [
         defaultFields.descricao

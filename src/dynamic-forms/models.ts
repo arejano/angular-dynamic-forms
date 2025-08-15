@@ -53,7 +53,6 @@ export interface FormDataDTO {
   redePagamento?: string;
   descricao?: string;
   pontos?: number;
-  series?: number;
   redes?: string;
   categoria?: string;
   prioridade?: string;
@@ -65,6 +64,7 @@ export interface FormDataDTO {
   idade?: number;
   disciplinas?: string[];
   habilidades?: string[];
+  series?:string[];
   [key: string]: any; // Para campos dinâmicos
 }
 

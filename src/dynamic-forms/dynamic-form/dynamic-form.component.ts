@@ -259,6 +259,11 @@ export class DynamicFormComponent {
     }
   }
 
+  logFormData() {
+    console.log(this.form?.value)
+  }
+
+
   resetForm() {
     if (this.isEditMode) {
       // Se estiver em modo de edição, restaurar valores originais
@@ -287,13 +292,11 @@ export class DynamicFormComponent {
     return formErrors;
   }
 
-  // Método para verificar se um campo específico tem erro
   hasFieldError(fieldName: string, errorType: string): boolean {
     const field = this.form?.get(fieldName);
     return !!(field && field.hasError(errorType) && field.touched);
   }
 
-  // Método para obter mensagem de erro personalizada
   getErrorMessage(fieldName: string): string {
     const field = this.form?.get(fieldName);
     if (!field || !field.errors || !field.touched) {
@@ -327,42 +330,29 @@ export class DynamicFormComponent {
     return "Campo inválido";
   }
 
-  // Método para carregar dados no formulário (modo edição)
   loadFormData(dto: FormDataDTO): void {
-    console.log("📥 Carregando dados para edição:", dto);
-
     this.currentFormData = dto;
     this.isEditMode = !!(dto.hash && dto.hash !== null);
 
-    // Criar objeto com apenas os campos que existem no formulário
     const formData: any = {};
     Object.keys(this.form.controls).forEach((fieldName) => {
       if (dto.hasOwnProperty(fieldName)) {
-        // Para campos array, garantir que é um array
         const fieldValue = dto[fieldName];
         if (Array.isArray(fieldValue)) {
-          formData[fieldName] = [...fieldValue]; // shallow copy do array
+          formData[fieldName] = [...fieldValue];
         } else {
           formData[fieldName] = fieldValue;
         }
       }
     });
 
-    // Atualizar formulário com os dados
     this.form.patchValue(formData);
 
-    // Salvar estado original para comparação (deep copy para arrays)
     this.originalFormData = this.deepCopy(formData);
     this.hasChanges = false;
     this.cdr.detectChanges();
-
-    console.log(`📝 Modo: ${this.isEditMode ? "Edição" : "Criação"}`);
-    if (this.isEditMode) {
-      console.log(`🆔 ID do objeto: ${dto.hash}`);
-    }
   }
 
-  // Método para verificar se houve mudanças no formulário
   private checkForChanges(): void {
     if (!this.isEditMode) {
       this.hasChanges = false;
@@ -375,24 +365,20 @@ export class DynamicFormComponent {
     const previousHasChanges = this.hasChanges;
     this.hasChanges = !isEqual;
 
-    // Forçar detecção de mudanças se o estado mudou
     if (previousHasChanges !== this.hasChanges) {
       this.cdr.detectChanges();
     }
   }
 
-  // Método para comparação profunda de objetos e arrays
   private deepEqual(obj1: any, obj2: any): boolean {
     if (obj1 === obj2) return true;
 
     if (obj1 == null && obj2 == null) return true;
     if (obj1 == null || obj2 == null) return false;
 
-    // Verificar se ambos são arrays
     if (Array.isArray(obj1) && Array.isArray(obj2)) {
       if (obj1.length !== obj2.length) return false;
 
-      // Ordenar arrays para comparação (caso a ordem não importe)
       const sorted1 = [...obj1].sort();
       const sorted2 = [...obj2].sort();
 
@@ -403,10 +389,8 @@ export class DynamicFormComponent {
       return true;
     }
 
-    // Se apenas um for array, são diferentes
     if (Array.isArray(obj1) || Array.isArray(obj2)) return false;
 
-    // Comparação para objetos
     if (typeof obj1 === "object" && typeof obj2 === "object") {
       const keys1 = Object.keys(obj1);
       const keys2 = Object.keys(obj2);
@@ -422,8 +406,6 @@ export class DynamicFormComponent {
       return true;
     }
 
-    // Comparação para valores primitivos
-    // Normalizar null/undefined como string vazia apenas para strings
     if (typeof obj1 === "string" || typeof obj2 === "string") {
       const normalizedVal1 = obj1 == null ? "" : obj1;
       const normalizedVal2 = obj2 == null ? "" : obj2;
@@ -433,7 +415,6 @@ export class DynamicFormComponent {
     return obj1 === obj2;
   }
 
-  // Método para cópia profunda de objetos e arrays
   private deepCopy(obj: any): any {
     if (obj === null || typeof obj !== "object") return obj;
 
@@ -451,7 +432,6 @@ export class DynamicFormComponent {
     return copy;
   }
 
-  // Método para obter apenas os campos que foram alterados
   getChangedFields(): { [key: string]: { from: any; to: any } } {
     if (!this.isEditMode) return {};
 
@@ -462,7 +442,6 @@ export class DynamicFormComponent {
       const originalValue = this.originalFormData[key];
       const currentValue = currentValues[key];
 
-      // Usar deepEqual para comparação correta (incluindo arrays)
       if (!this.deepEqual(originalValue, currentValue)) {
         changes[key] = {
           from: originalValue,
@@ -474,18 +453,15 @@ export class DynamicFormComponent {
     return changes;
   }
 
-  // Método para verificar se um campo específico foi alterado
   isFieldChanged(fieldName: string): boolean {
     if (!this.isEditMode) return false;
 
     const originalValue = this.originalFormData[fieldName];
     const currentValue = this.form?.get(fieldName)?.value;
 
-    // Usar deepEqual para comparação correta (incluindo arrays)
     return !this.deepEqual(originalValue, currentValue);
   }
 
-  // Método para limpar dados e voltar ao modo de criação
   clearFormData(): void {
     this.currentFormData = null;
     this.isEditMode = false;
@@ -496,7 +472,6 @@ export class DynamicFormComponent {
     console.log("🆕 Formulário em modo de criação");
   }
 
-  // Método para obter status atual do formulário
   getFormStatus(): {
     isEditMode: boolean;
     hasChanges: boolean;
@@ -513,33 +488,22 @@ export class DynamicFormComponent {
     };
   }
 
-  // Métodos de exemplo para demonstrar uso do sistema
   loadExampleCreateMode(): void {
     console.log("🆕 Exemplo: Modo de criação");
     this.clearFormData();
   }
 
   loadExampleEditMode(): void {
-    console.log("✏️ Exemplo: Carregando dados para edição");
     const exampleDTO: FormDataDTO = {
-      hash: "abc-123-def-456", // ID do objeto
+      hash: "0001",
       anoLetivo: "2024",
-      redePagamento: "Rede Municipal de São Paulo",
+      redePagamento: "Pensi",
       descricao:
-        "Projeto de educação digital para estudantes do ensino fundamental",
-      pontos: 85,
-      series: 5,
+        "Lorem Lorem Lorem",
+      pontos: 5,
       redes: "001",
-      categoria: "edu",
-      prioridade: "alta",
-      nomeAluno: "João Silva Santos",
-      turno: "matutino",
-      email: "joao.silva@email.com",
-      telefone: "(11) 99999-8888",
-      cpf: "123.456.789-00",
-      idade: 25,
       disciplinas: ["mat", "por", "his"],
-      habilidades: ["js", "angular", "python", "sql"],
+      series: ["002"]
     };
 
     this.loadFormData(exampleDTO);
@@ -558,50 +522,6 @@ export class DynamicFormComponent {
     };
 
     this.loadFormData(partialDTO);
-  }
-
-  // Método para simular carregamento de dados da API
-  simulateLoadFromAPI(id: string): void {
-    console.log(`🔄 Simulando carregamento da API para ID: ${id}`);
-
-    // Simular delay da API
-    setTimeout(() => {
-      const mockDTO: FormDataDTO = {
-        hash: id,
-        anoLetivo: "2024",
-        redePagamento: "Rede Estadual",
-        descricao: "Dados carregados da API com sucesso",
-        pontos: 75,
-        series: 8,
-        email: "api@exemplo.com",
-        categoria: "tech",
-        prioridade: "urgente",
-        disciplinas: ["mat", "por", "cie"],
-        habilidades: ["js", "ts", "angular", "node", "sql"],
-      };
-
-      this.loadFormData(mockDTO);
-      console.log("✅ Dados carregados da API");
-    }, 1000);
-  }
-
-  // Método para demonstrar funcionalidades do multiselect
-  demonstrateMultiSelect(): void {
-    console.log("🔧 Demonstrando funcionalidades do MultiSelect");
-
-    // Testar seleção programática
-    const disciplinasControl = this.form?.get("disciplinas");
-    const habilidadesControl = this.form?.get("habilidades");
-
-    if (disciplinasControl) {
-      disciplinasControl.setValue(["mat", "cie", "his"]);
-      console.log("📚 Disciplinas selecionadas:", disciplinasControl.value);
-    }
-
-    if (habilidadesControl) {
-      habilidadesControl.setValue(["js", "angular", "python", "sql", "node"]);
-      console.log("💻 Habilidades selecionadas:", habilidadesControl.value);
-    }
   }
 
   // Método para obter informações sobre campos multiselect
@@ -632,37 +552,7 @@ export class DynamicFormComponent {
     return info;
   }
 
-  // Método para testar detecção de mudanças em multiselect
-  testMultiSelectChanges(): void {
-    // Carregar dados de exemplo
-    this.loadExampleEditMode();
-
-    setTimeout(() => {
-      // Testar mudança em qualquer campo array
-      Object.keys(this.form.controls).forEach((fieldName) => {
-        const control = this.form?.get(fieldName);
-        const currentValue = control?.value;
-
-        // Se é um array, testar mudança
-        if (Array.isArray(currentValue)) {
-          // Criar um novo array diferente para testar detecção de mudanças
-          const newValue = [...currentValue, "teste"];
-          control?.setValue(newValue);
-          return; // Testar apenas o primeiro array encontrado
-        }
-      });
-
-      setTimeout(() => {
-        console.log("🧪 Teste de mudanças em MultiSelect:");
-        console.log("- Mudanças detectadas:", this.hasChanges);
-        console.log("- Status:", this.getFormStatus());
-      }, 100);
-    }, 100);
-  }
-
-  // Método para debug do estado em tempo real
   debugFormState(): void {
-    console.log("🔍 Estado atual do formulário:");
     console.log("- isEditMode:", this.isEditMode);
     console.log("- hasChanges:", this.hasChanges);
     console.log("- form.dirty:", this.form.dirty);
@@ -672,7 +562,6 @@ export class DynamicFormComponent {
     console.log("- changedFields:", this.getChangedFields());
     console.log("- formStatus:", this.getFormStatus());
 
-    // Verificar cada campo array especificamente
     Object.keys(this.form.controls).forEach((fieldName) => {
       const control = this.form?.get(fieldName);
       const currentValue = control?.value;

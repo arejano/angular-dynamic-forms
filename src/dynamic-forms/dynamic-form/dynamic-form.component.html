@@ -96,27 +96,6 @@
         </button>
         <button
           type="button"
-          (click)="simulateLoadFromAPI('api-test-123')"
-          class="example-btn api-example"
-        >
-          🔄 Simular API
-        </button>
-        <button
-          type="button"
-          (click)="demonstrateMultiSelect()"
-          class="example-btn multiselect-example"
-        >
-          🔧 Testar MultiSelect
-        </button>
-        <button
-          type="button"
-          (click)="testMultiSelectChanges()"
-          class="example-btn changes-test-example"
-        >
-          🧪 Testar Mudanças
-        </button>
-        <button
-          type="button"
           (click)="debugFormState()"
           class="example-btn debug-example"
         >
@@ -124,27 +103,29 @@
         </button>
       </div>
     </div>
-
-    <div class="form-actions">
-      <button
-        type="submit"
-        (click)="onSubmit()"
-        [disabled]="form?.invalid || (isEditMode && !hasChanges)"
-        class="submit-btn"
-      >
-        {{ isEditMode ? "Salvar Alterações" : "Enviar Formulário" }}
-      </button>
-      <button type="button" (click)="resetForm()" class="reset-btn">
-        {{ isEditMode ? "Restaurar" : "Limpar" }}
-      </button>
-      <button
-        type="button"
-        (click)="clearFormData()"
-        class="new-btn"
-        *ngIf="isEditMode"
-      >
-        Novo
-      </button>
-    </div>
   </form>
+  <div class="form-actions">
+    <button type="button" (click)="logFormData()" class="reset-btn">
+      Log Form Data
+    </button>
+    <button
+      type="submit"
+      (click)="onSubmit()"
+      [disabled]="form?.invalid || (isEditMode && !hasChanges)"
+      class="submit-btn"
+    >
+      {{ isEditMode ? "Salvar Alterações" : "Enviar Formulário" }}
+    </button>
+    <button type="button" (click)="resetForm()" class="reset-btn">
+      {{ isEditMode ? "Restaurar" : "Limpar" }}
+    </button>
+    <button
+      type="button"
+      (click)="clearFormData()"
+      class="new-btn"
+      *ngIf="isEditMode"
+    >
+      Novo
+    </button>
+  </div>
 </div>

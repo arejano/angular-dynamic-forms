@@ -58,9 +58,14 @@ export const defaultFields = {
     placeholder: "Selecione",
     validators: ["required"],
     options: [
-      { hash: "001", descricao: "Rede Municipal" },
-      { hash: "002", descricao: "Rede Estadual" },
-      { hash: "003", descricao: "Rede Federal" },
+      { hash: "001", descricao: "Alfa" },
+      { hash: "002", descricao: "Pensi" },
+      { hash: "003", descricao: "Alfa 2" },
+      { hash: "004", descricao: "Alfa" },
+      { hash: "005", descricao: "Pensi" },
+      { hash: "006", descricao: "Alfa 2" },
+      { hash: "007", descricao: "Alfa" },
+      { hash: "008", descricao: "Pensi" },
     ],
   },
 

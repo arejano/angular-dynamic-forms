@@ -42,7 +42,21 @@
     </div>
 
     <!-- Seta -->
-    <div class="dropdown-arrow">
+    <div
+      class="dropdown-arrow"
+      style="
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #0f0f10;
+        pointer-events: none;
+        transition: transform 0.2s ease;
+      "
+      [style.transform]="
+        isDropdownOpen ? 'translateY(-50%) rotate(180deg)' : 'translateY(-50%)'
+      "
+    >
       <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
         <path
           d="M1 1L6 6L11 1"
@@ -61,18 +75,19 @@
     [class.dropdown-open]="isDropdownOpen"
     #dropdown
   >
+    <div *ngIf="isDropdownOpen" class="split"></div>
     <div class="dropdown-content">
       <!-- Campo de pesquisa -->
-      <div class="search-container">
-        <input
-          #searchInput
-          type="text"
-          class="search-input"
-          (input)="onSearchChange()"
-          placeholder="Pesquisar..."
-          (click)="$event.stopPropagation()"
-        />
-      </div>
+      <!-- <div class="search-container"> -->
+      <!-- <input -->
+      <!-- #searchInput -->
+      <!-- type="text" -->
+      <!-- class="search-input" -->
+      <!-- (input)="onSearchChange()" -->
+      <!-- placeholder="Pesquisar..." -->
+      <!-- (click)="$event.stopPropagation()" -->
+      <!-- /> -->
+      <!-- </div> -->
 
       <!-- Lista de opções -->
       <div class="options-list">
